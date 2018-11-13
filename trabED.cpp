@@ -39,7 +39,7 @@ class Lista {
         void Inserir(string d,float t);
         void Remover(string d,float t);
         void Imprime() const;
-        bool Buscar(string d,float t);
+        Noh* Buscar(string d,float t);
 };
 
 Lista::Lista(){
@@ -76,6 +76,37 @@ void Lista::Inserir(string d, float t){
     mTamanho++;
 }
 
+void Lista::Remover(string d, float t){
+    if (Vazia()){
+        throw runtime_error ("Impossivel Remover em lista vazia");
+    } else {
+        Noh* remover = Buscar(d, t);
+        if(remover == mPtPrimeiro){
+            if (mTamanho == 1){
+                mPtPrimeiro = NULL;
+                mPtUltimo = NULL;
+            } else {
+                mPtPrimeiro = mPtPrimeiro->mPtProx;
+            }
+        } else {
+            Noh* atual = mPtPrimeiro;
+            Noh* anterior = NULL;
+            while (atual != remover){
+                anterior = atual;
+                atual = atual->mPtProx;
+            }
+            if (atual == mPtUltimo){
+                anterior->mPtProx = NULL;
+                mPtUltimo = anterior;
+            } else {
+                anterior->mPtProx = atual->mPtProx;
+            }
+        }
+        mTamanho--;
+        delete remover;
+    }
+}
+
 // metodo basico que *percorre* a lista, imprimindo seus elementos
 void Lista::Imprime() const {
     Noh* iter = mPtPrimeiro;
@@ -87,17 +118,22 @@ void Lista::Imprime() const {
     }
 }
 
-bool Lista::Buscar(string d, float t){
+Noh* Lista::Buscar(string d, float t){
     Noh* atual = mPtPrimeiro;
+    bool encontrado = false;
     
-    while (atual != NULL){
+    while (atual != NULL and encontrado == false ){
         if (atual->mValor.mData == d and atual->mValor.mTemperatura == t){
-            cout << atual->mValor.mData << " : " << atual->mValor.mTemperatura << endl;
-            return true;
+            encontrado = true;
+        } else {
+            atual = atual->mPtProx;
         }
-        atual = atual->mPtProx;
     }
-    return false;
+    if (encontrado == false){
+        throw invalid_argument ("Elemento não existe");
+    } else {
+        return atual;
+    }
 }
     
 
@@ -116,7 +152,13 @@ int main() { // NÃO MODIFIQUE!
     a.Inserir("13/11/2018 11:54", t);
     a.Inserir("13/11/2018 11:55", t);
     a.Inserir("13/11/2018 11:56", t);
+    a.Imprime();
     
+    a.Remover("13/11/2018 11:46", t);
+    a.Remover("13/11/2018 11:56", t);
+    a.Remover("13/11/2018 11:52", t);
+    
+    cout << endl;
     a.Imprime();
     return 0;
 }
