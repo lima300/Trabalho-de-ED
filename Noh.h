@@ -13,13 +13,11 @@
  * A Classe possui os atributos:
  *    - Valor
  *    - Próximo
- * 
- * As listas são armazenadas em uma Árvore AVL, onde cada Noh da AVL é um dia.
  */
 
 /* 
  * File:   Noh.h
- * Author: user-pc
+ * Author: Kellyson Santos / Otavio Lima
  *
  * Created on 14 de Novembro de 2018, 12:28
  */

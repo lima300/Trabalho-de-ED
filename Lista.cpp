@@ -1,13 +1,17 @@
 /*
  * Trabalho Final de Estrutura de Dados
- * Arquivo de Classe: Lista Encadeada
+ * By: Kellyson Santos e Otavio Lima
+ * UFLA - 2018/2
  * 
- * Esse arquivo contém a implementação da classe lista do programa.
- * Cada Noh da lista armazena a temperatura de determinado horário de um dia.
+ * Arquivo de Cabeçalho: Lista Encadeada
+ * 
+ * Esse arquivo contém a implementação dos métodos da classe Lista,
+ * em que são armazenadas as temperaturas no decorrer do dia.
  * 
  * A Classe possui os métodos:
- *    
- * 
+ *    - Lista() (Um construtor, que inicia os ponteiros como nulos e o tamanho em zero)
+ *    - ~Lista() (Um destrutor que percorre a lista desalocando a memória alocada pelos nós)
+ *
  * As listas são armazenadas em uma Árvore AVL, onde cada Noh da AVL é um dia.
  */
 

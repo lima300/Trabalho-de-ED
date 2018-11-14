@@ -1,3 +1,25 @@
+/*
+ * Trabalho Final de Estrutura de Dados
+ * By: Kellyson Santos e Otavio Lima
+ * UFLA - 2018/2
+ * 
+ * Arquivo base: Main
+ * 
+ * O trabalho consiste em uma aplicação que capta os dados de Data e Temperatura
+ * de um sensor para Arduino e armazena nas estruturas de dados.
+ * 
+ * As estruturas utilizadas são:
+ *      - Árvore AVL;
+ *      - Lista encadeada;
+ * 
+ *  ~ Cada nó da Árvore armazena as temperaturas de um dia em que a leitura
+ *    de dados foi efetuada, ou seja, cada nó é correspondente a um dia.
+ *  ~ Cada dia possui uma Lista que armazena em cada um de seus nós uma leitura
+ *    de determinado horário do dia.
+ * 
+ * A leitura dos dados é feita pelo sensor do arduíno e armazenada externamente
+ */
+
 #include <iostream>
 #include <exception>
 #include "Lista.h"
