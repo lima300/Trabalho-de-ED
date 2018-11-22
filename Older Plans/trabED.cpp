@@ -15,6 +15,7 @@ class Data {
     Data (int d, int m, int a);
     bool operator < (Data* d);
     bool operator > (Data* d);
+    bool operator == (Data* d);
 };
 
 Data::Data(int d , int m, int a){
@@ -61,6 +62,10 @@ bool Data::operator > (Data* d){
             }
         }
     }
+}
+
+bool Data::operator == (Data* d){
+    return ano == d->ano and mes == d->mes and dia == d->dia;
 }
 
 class Noh {
@@ -115,10 +120,9 @@ bool Lista::Vazia(){
 
 void Lista::Inserir(float t){
     Noh* novo = new Noh(t);
-    if (Vazia()){
+    if (mPtPrimeiro == NULL){
         mPtPrimeiro = novo;
         mPtUltimo = novo;
-        
     } else {
         mPtUltimo->mPtProx = novo;
         mPtUltimo = novo;
@@ -160,10 +164,8 @@ void Lista::Remover(float t){
 // metodo basico que *percorre* a lista, imprimindo seus elementos
 void Lista::Imprime() const {
     Noh* iter = mPtPrimeiro;
-    float t;
     while (iter != NULL) {
-        t = iter->mTemperatura;
-        cout << t << endl;
+        cout << iter->mTemperatura << " ";
         iter = iter->mPtProx;
     }
 }
@@ -202,7 +204,7 @@ class NohAVL{
 
 NohAVL::NohAVL(Data* d){
     chave = d;
-    lista = NULL;
+    lista = new Lista();
     esq = NULL;
     dir = NULL;
     pai = NULL;
@@ -391,7 +393,9 @@ NohAVL* AVL::arrumarBalanciamento(NohAVL* umNoh){
 void AVL::preOrderAux(NohAVL* umNoh){
     if(umNoh != NULL) { 
         cout << umNoh->chave->dia << "/" <<umNoh->chave->mes << "/"
-             << umNoh->chave->ano <<endl; 
+             << umNoh->chave->ano << " : " ;
+        umNoh->lista->Imprime();
+        cout << endl; 
         preOrderAux(umNoh->esq); 
         preOrderAux(umNoh->dir); 
     }
@@ -407,7 +411,7 @@ void AVL::removerRec(Data* d, float t){
             buscado->Remover(t);
         }
     } else {
-        throw invalid_argument ("Elemento não encontrado");
+        throw invalid_argument ("Elemento nao encontrado");
     }
 }
 
@@ -439,8 +443,10 @@ NohAVL* AVL::removerRecAux(NohAVL* umNoh, Data* d){
             umNoh->dir = removerRecAux(umNoh->dir, temp->chave); 
         } 
     } 
-    if (umNoh == NULL) 
+    if (umNoh == NULL){ 
         return umNoh; 
+    }
+    
     return arrumarBalanciamento(umNoh);
 }
 
@@ -454,7 +460,7 @@ NohAVL* AVL::minimoAux(NohAVL* atual){
 
 Lista* AVL::busca(Data* d){
     NohAVL* atual = raiz;
-    while(atual != NULL and atual->chave == d){
+    while(atual != NULL and atual->chave != d){
         if(atual->chave > d){
             atual = atual->esq;
         }
@@ -463,10 +469,8 @@ Lista* AVL::busca(Data* d){
         }
     }
     if (atual != NULL){
-        cout << "achei";
         return atual->lista;
     } else {
-        cout << "nao achei";
         return NULL;
     }
 }
@@ -474,12 +478,31 @@ Lista* AVL::busca(Data* d){
 
 int main() { // NÃO MODIFIQUE!
     Data atual = Data(21,11,2018);
-    
-    AVL a;
-    float t;
-    cin >> t;
-    
-    a.inserirRec(&atual, t);
+    AVL arvore;
+    float valor;
+    char operacao;
+    do {
+        cin >> operacao;
+        switch (operacao) {
+            case 'I': // Inserir
+                cin >> valor;
+                arvore.inserirRec(&atual, valor);
+                break;
+            case 'R': // Remover
+                cin >> valor;
+                arvore.removerRec(&atual, valor);
+                break;
+            case 'B': // Buscar
+                
+                break;
+            case 'E': // Escrever tudo
+                arvore.preOrder();
+                break;
+            case 'S':
+            
+                break;
+        }
+    } while (operacao != 'F');
     
     return 0;
 }
