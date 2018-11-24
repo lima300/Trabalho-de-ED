@@ -4,7 +4,6 @@
 using namespace std;
 
 class Data {
-    friend class info;
     friend class Noh;
     friend class Lista;
     friend class AVL;

@@ -1,46 +1,38 @@
 /*
- * Trabalho Final de Estrutura de Dados
- * By: Kellyson Santos e Otavio Lima
- * UFLA - 2018/2
- * 
- * Arquivo de Cabeçalho: Lista Encadeada
- * 
- * Esse arquivo contém a declaração da classe Lista, em que são armazenadas as temperaturas de cada dia.
- * Cada Noh da lista armazena a temperatura de determinado horário de um dia.
- * 
- * A Classe possui os atributos:
- *    - Primeiro (Um ponteiro apontando para o primeiro Noh da Lista)
- *    - Ultimo (Um ponteiro apontando para o último Noh da lista - Facilita a inserção no fim da lista)
- *
- * As listas são armazenadas em uma Árvore AVL, onde cada Noh da AVL é um dia.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 /* 
  * File:   Lista.h
- * Author: Kellyson Santos / Otavio Lima
+ * Author: kellyson
  *
- * Created on 14 de Novembro de 2018, 12:28
+ * Created on 23 de Novembro de 2018, 20:58
  */
 
 #ifndef LISTA_H
 #define LISTA_H
 #include "Noh.h"
+#include <iostream>
+#include <string>
 
 using namespace std;
 
 class Lista {
+    friend class AVL;
     private:
-        Noh* primeiro;
-        Noh* ultimo;
-        int tamanho;
+        Noh* mPtPrimeiro;
+        Noh* mPtUltimo;
+        int mTamanho;
     public:
         Lista();
         ~Lista();
         bool vazia ();
-        void inserir(string d,float t);
-        void remover(string d,float t);
+        void inserir(float t);
+        void remover(float t);
         void imprime() const;
-        Noh* buscar(string d,float t);
+        Noh* buscar(float t);
 };
 
 #endif /* LISTA_H */

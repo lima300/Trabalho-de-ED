@@ -1,126 +1,104 @@
 /*
- * Trabalho Final de Estrutura de Dados
- * By: Kellyson Santos e Otavio Lima
- * UFLA - 2018/2
- * 
- * Arquivo de Cabeçalho: Lista Encadeada
- * 
- * Esse arquivo contém a implementação dos métodos da classe Lista,
- * em que são armazenadas as temperaturas no decorrer do dia.
- * 
- * A Classe possui os métodos:
- *    - Lista() (Um construtor, que inicia os ponteiros como nulos e o tamanho em zero)
- *    - ~Lista() (Um destrutor que percorre a lista desalocando a memória alocada pelos nós)
- *
- * As listas são armazenadas em uma Árvore AVL, onde cada Noh da AVL é um dia.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 
 /* 
- * File:    Lista.cpp
- * Authors: Otavio Lima, Kellyson Santos
+ * File:   Lista.cpp
+ * Author: kellyson
  * 
- * Created on 14 de Novembro de 2018, 12:01
+ * Created on 23 de Novembro de 2018, 20:58
  */
 
-#include "Lista.h"
 #include <iostream>
-#include <exception>
-#include <string>
+#include "Lista.h"
+#include "Noh.h"
 
 using namespace std;
 
 Lista::Lista(){
-    primeiro = NULL;
-    ultimo = NULL;
-    tamanho = 0;
+    mPtPrimeiro = NULL;
+    mPtUltimo = NULL;
+    mTamanho = 0;
 }
 
 Lista::~Lista(){
-    Noh* iter = primeiro;
+    Noh* iter = mPtPrimeiro;
     Noh* proximo = NULL;
     while (iter != NULL) {
-        proximo = iter->prox;
+        proximo = iter->mPtProx;
         delete iter;
         iter = proximo;
     }
 };
 
 bool Lista::vazia(){
-    if (tamanho){
-        return false;
-    }
-    
-    return true;
+    return mPtPrimeiro == NULL and mPtUltimo == NULL and mTamanho == 0;
 }
 
-void Lista::inserir(string d, float t){
-    Noh* novo = new Noh(d,t);
-    
-    if (vazia()){
-        primeiro = novo;
-        ultimo = novo;
-        
+void Lista::inserir(float t){
+    Noh* novo = new Noh(t);
+    if (mPtPrimeiro == NULL){
+        mPtPrimeiro = novo;
+        mPtUltimo = novo;
     } else {
-        ultimo->prox = novo;
-        ultimo = novo;
+        mPtUltimo->mPtProx = novo;
+        mPtUltimo = novo;
     }
-    tamanho++;
+    mTamanho++;
 }
 
-void Lista::remover(string d, float t){
+void Lista::remover(float t){
     if (vazia()){
         throw runtime_error ("Impossivel Remover em lista vazia");
     } else {
-        Noh* remover = buscar(d, t);
-        if(remover == primeiro){
-            if (tamanho == 1){
-                primeiro = NULL;
-                ultimo = NULL;
+        Noh* remover = buscar(t);
+        if(remover == mPtPrimeiro){
+            if (mTamanho == 1){
+                mPtPrimeiro = NULL;
+                mPtUltimo = NULL;
             } else {
-                primeiro = primeiro->prox;
+                mPtPrimeiro = mPtPrimeiro->mPtProx;
             }
         } else {
-            Noh* atual = primeiro;
+            Noh* atual = mPtPrimeiro;
             Noh* anterior = NULL;
             while (atual != remover){
                 anterior = atual;
-                atual = atual->prox;
+                atual = atual->mPtProx;
             }
-            if (atual == ultimo){
-                anterior->prox = NULL;
-                ultimo = anterior;
+            if (atual == mPtUltimo){
+                anterior->mPtProx = NULL;
+                mPtUltimo = anterior;
             } else {
-                anterior->prox = atual->prox;
+                anterior->mPtProx = atual->mPtProx;
             }
         }
-        tamanho--;
+        mTamanho--;
         delete remover;
     }
 }
 
-// metodo basico que *percorre* a lista, imprimindo seus elementos
 void Lista::imprime() const {
-    Noh* iter = primeiro;
-    float t;
+    Noh* iter = mPtPrimeiro;
     while (iter != NULL) {
-        t = iter->getTemp();
-        cout << iter->getData() << " -> " << t << endl;
-        iter = iter->prox;
+        cout << iter->mTemperatura << " ";
+        iter = iter->mPtProx;
     }
 }
 
-Noh* Lista::buscar(string d, float t){
-    Noh* atual = primeiro;
+Noh* Lista::buscar(float t){
+    Noh* atual = mPtPrimeiro;
     bool encontrado = false;
     
     while (atual != NULL and encontrado == false ){
-        if (atual->getData() == d and atual->getTemp() == t){
+        if (atual->mTemperatura == t){
             encontrado = true;
         } else {
-            atual = atual->prox;
+            atual = atual->mPtProx;
         }
     }
-    
     if (encontrado == false){
         throw invalid_argument ("Elemento não existe");
     } else {

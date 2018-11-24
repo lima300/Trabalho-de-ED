@@ -22,6 +22,8 @@
 
 #include <iostream>
 #include <exception>
+#include "AVL.h"
+#include "Data.h"
 #include "Lista.h"
 
 using namespace std;
@@ -29,29 +31,35 @@ using namespace std;
 typedef string Texto;
 
 int main() { // NÃO MODIFIQUE!
-    Lista a;
-    float t;
-    cin >> t;
+    Data atual = Data(21,11,2018);
+    AVL arvore;
     
-    a.inserir("13/11/2018 11:46", t);
-    a.inserir("13/11/2018 11:47", t);
-    a.inserir("13/11/2018 11:48", t);
-    a.inserir("13/11/2018 11:49", t);
-    a.inserir("13/11/2018 11:50", t);
-    a.inserir("13/11/2018 11:51", t);
-    a.inserir("13/11/2018 11:52", t);
-    a.inserir("13/11/2018 11:53", t);
-    a.inserir("13/11/2018 11:54", t);
-    a.inserir("13/11/2018 11:55", t);
-    a.inserir("13/11/2018 11:56", t);
-    a.imprime();
+    float valor;
+    char operacao;
     
-    a.remover("13/11/2018 11:46", t);
-    a.remover("13/11/2018 11:56", t);
-    a.remover("13/11/2018 11:52", t);
+    do {
+        cin >> operacao;
+        switch (operacao) {
+            case 'I': // Inserir
+                cin >> valor;
+                arvore.inserirRec(&atual, valor);
+                break;
+            case 'R': // Remover
+                cin >> valor;
+                arvore.removerRec(&atual, valor);
+                break;
+            case 'B': // Buscar
+                
+                break;
+            case 'E': // Escrever tudo
+                arvore.preOrder();
+                break;
+            case 'S':
+            
+                break;
+        }
+    } while (operacao != 'F');
     
-    cout << endl;
-    a.imprime();
     return 0;
 }
 
