@@ -66,21 +66,24 @@ void loop(void){
              Serial.print("Insira um dia:\n");
              while(!Serial.available());
              delay(2000);
-             Serial.read();
              int dia = Serial.parseInt();
-             Serial.print("Você inseriu ");
-             Serial.print(dia);
+  
+             Serial.flush();
+             while(!Serial.available());
+             delay (2000);
+             int mes = Serial.parseInt();
              
              Serial.flush();
              while(!Serial.available());
-             int mes = Serial.parseInt();
-             Serial.flush();
-             while(!Serial.available());
+             delay (2000);
              int ano = Serial.parseInt();
              Serial.flush();
-             
+             delay (2000);
              Data atual(dia,mes,ano);
+             delay(2000);
              valor = RTC.temperature() / 4.;
+             delay(2000);
+             //Serial.println(valor);
              arvore.inserirRec(&atual, valor);
              //Serial << F("insercao feita") << endl;
                   

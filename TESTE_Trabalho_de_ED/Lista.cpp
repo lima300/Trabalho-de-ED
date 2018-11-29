@@ -50,6 +50,8 @@ void Lista::inserir(float t){
         mPtUltimo = novo;
     }
     mTamanho++;
+    Serial.println("insercao realizada");
+    Serial.println(novo->mTemperatura);
 }
 
 void Lista::remover(float t){
