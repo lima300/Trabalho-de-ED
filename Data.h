@@ -31,6 +31,7 @@ class Data {
     bool operator < (Data* d);
     bool operator > (Data* d);
     bool operator == (Data* d);
+    string get();
 };
 
 #endif /* DATA_H */

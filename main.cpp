@@ -38,9 +38,29 @@ int main() { // NÃO MODIFIQUE!
     char operacao;
     
     do {
+        string dataAtual = atual.get();
+        
+        cout << "|------------------| MENU |------------------|" <<  endl
+             << "|                                            |" <<  endl
+             << "|          Opções:                           |" <<  endl
+             << "|          I > Inserir temperatura           |" <<  endl
+             << "|          R > Remover temperatura           |" <<  endl
+             << "|          B > Buscar  temperatura           |" <<  endl
+             << "|          E > Imprimir ordenado             |" <<  endl
+             << "|          S > Salvar dados                  |" <<  endl
+             << "|          C > Carregar dados                |" <<  endl
+             << "|                                            |" <<  endl
+             << "|         Data a inserir: "
+                                     << dataAtual <<"         |" <<  endl
+             << "|                                            |" <<  endl
+             << "|---------------------//---------------------|" <<  endl
+             << "Escolha uma opção:\n";
+        
         cin >> operacao;
         switch (operacao) {
             case 'I': // Inserir
+                cout << "Digite a temperatura a ser inserida:\n";
+                
                 cin >> valor;
                 arvore.inserirRec(&atual, valor);
                 break;
@@ -55,7 +75,26 @@ int main() { // NÃO MODIFIQUE!
                 arvore.preOrder();
                 break;
             case 'S':
-            
+                cout << "\n\n  BORA SALVAR \n\n";
+                
+                if(arvore.save()){
+                    cout << "Salva com sucesso!\n";
+                } else {
+                    cerr << "Não foi possível salvar o arquivo!\n";
+                }
+                
+                break;
+            case 'C':
+                if(arvore.read()){
+                    cout << "Carregada com sucesso!\n";
+                } else {
+                    cerr << "Erro na leitura do arquivo!\n";
+                }
+                
+                break;
+            default:
+                cout << "Opção inválida! Tente novamente!" << endl;
+                
                 break;
         }
     } while (operacao != 'F');

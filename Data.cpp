@@ -12,6 +12,7 @@
  */
 
 #include "Data.h"
+#include <sstream>
 
 Data::Data(int d , int m, int a){
     dia = d;
@@ -61,4 +62,11 @@ bool Data::operator > (Data* d){
 
 bool Data::operator == (Data* d){
     return ano == d->ano and mes == d->mes and dia == d->dia;
+}
+
+string Data::get(){
+    string da = to_string(dia);
+    string mo = to_string(mes);
+    string ye = to_string(ano);
+    return da + " " + mo + " " + ye;
 }

@@ -41,6 +41,9 @@ class AVL {
         void preOrderAux(NohAVL* umNoh);
         NohAVL* minimoAux (NohAVL* atual);
         Lista* busca (Data* d);
+        bool save(string nome = "output.txt");
+        bool recursiveSave(NohAVL* noh, string nome);
+        bool read(string nome = "output.txt");
 };
 
 #endif /* AVL_H */

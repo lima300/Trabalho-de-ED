@@ -482,6 +482,7 @@ int main() { // NÃO MODIFIQUE!
     float valor;
     char operacao;
     do {
+		cout << "\033[1;31mbold red text\033[0m\n";
         cin >> operacao;
         switch (operacao) {
             case 'I': // Inserir

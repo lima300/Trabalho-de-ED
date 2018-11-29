@@ -12,6 +12,7 @@
  */
 
 #include <iostream>
+#include <fstream>
 #include "NohAVL.h"
 #include "Lista.h"
 #include "AVL.h"
@@ -250,5 +251,82 @@ Lista* AVL::busca(Data* d){
         return atual->lista;
     } else {
         return NULL;
+    }
+}
+
+bool AVL::recursiveSave(NohAVL* noh, string nome){
+    ofstream arch(nome.c_str(), ios::app);
+    
+    string data = noh->chave->get();
+    arch << " " << data << " ";
+    
+    string lista = noh->lista->get();
+    arch << lista << "# ";
+    
+    arch.close();
+    
+    bool savedE = true;
+    bool savedD = true;
+    
+    if(noh->esq){
+        savedE = recursiveSave(noh->esq, nome);
+    }
+    
+    if(noh->dir){
+        savedD = recursiveSave(noh->dir, nome);
+    }
+    
+    if(savedE && savedD){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool AVL::save(string nome){
+    if(recursiveSave(raiz, nome)){
+        ofstream arch(nome.c_str(), ios::app);
+        arch << '|';
+        arch.close();
+        
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool AVL::read(string nome){
+    ifstream arch(nome.c_str());
+    
+    if(arch){
+        string reader;
+        arch >> reader;
+        
+        while(reader != "|"){
+            
+            string dia = reader;
+            arch >> reader;
+            string mes = reader;
+            arch >> reader;
+            string ano = reader;
+
+            Data* date = new Data(stoi(dia),stoi(mes),stoi(ano));
+
+            while (reader != "#"){
+                arch >> reader;
+
+                if (reader != "#"){
+                    inserirRec(date,stof(reader));
+                }
+            }
+            
+            arch >> reader;
+            
+        };
+        
+        arch.close();
+        return true;
+    } else {
+        return false;
     }
 }

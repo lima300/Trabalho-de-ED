@@ -105,3 +105,17 @@ Noh* Lista::buscar(float t){
         return atual;
     }
 }
+
+string Lista::get(){
+    string temps = "";
+    
+    Noh* aux = mPtPrimeiro;
+    
+    while(aux){
+        temps += to_string(aux->mTemperatura) + " ";
+        aux = aux->mPtProx;
+    }
+    
+    return temps;
+}
+        
