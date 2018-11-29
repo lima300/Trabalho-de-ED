@@ -75,7 +75,6 @@ int main() { // NÃO MODIFIQUE!
                 arvore.preOrder();
                 break;
             case 'S':
-                cout << "\n\n  BORA SALVAR \n\n";
                 
                 if(arvore.save()){
                     cout << "Salva com sucesso!\n";
