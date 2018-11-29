@@ -50,73 +50,86 @@ void setup(void){
              << F("Escolha uma opção:") << endl;
 }
 
+char lastOp = ' ';
+
 void loop(void){
     AVL arvore;
     
     float valor;
     char operacao;    
-       while(!Serial.available());
-       operacao = Serial.read();
-       Serial.flush();
-       if (operacao == 'I'){ // Inserir
-           while(!Serial.available());
-           int dia = Serial.parseInt();
-           Serial.flush();
-           while(!Serial.available());
-           int mes = Serial.parseInt();
-           Serial.flush();
-           while(!Serial.available());
-           int ano = Serial.parseInt();
-           Serial.flush();
-           
-           Data atual(dia,mes,ano);
-           valor = RTC.temperature() / 4.;
-           arvore.inserirRec(&atual, valor);
-           Serial << F("insercao feita") << endl;
-                
-       } else if (operacao == 'R'){// Remover
-           Serial << F("digite um valor") << endl;
-           while(!Serial.available());
-           valor = Serial.parseFloat();
-           while(!Serial.available());
-           int dia = Serial.parseInt();
-           Serial.flush();
-           while(!Serial.available());
-           int mes = Serial.parseInt();
-           Serial.flush();
-           while(!Serial.available());
-           int ano = Serial.parseInt();
-           Serial.flush();
-           
-           Data atual(dia,mes,ano);
-           arvore.removerRec(&atual, valor);
+    while(!Serial.available());
+    operacao = Serial.read();
+    
+       if (operacao != lastOp){
+         Serial.flush();
+         if (operacao == 'I'){ // Inserir
+             Serial.print("Insira um dia:\n");
+             while(!Serial.available());
+             delay(2000);
+             Serial.read();
+             int dia = Serial.parseInt();
+             Serial.print("Você inseriu ");
+             Serial.print(dia);
+             
+             Serial.flush();
+             while(!Serial.available());
+             int mes = Serial.parseInt();
+             Serial.flush();
+             while(!Serial.available());
+             int ano = Serial.parseInt();
+             Serial.flush();
+             
+             Data atual(dia,mes,ano);
+             valor = RTC.temperature() / 4.;
+             arvore.inserirRec(&atual, valor);
+             //Serial << F("insercao feita") << endl;
+                  
+         } else if (operacao == 'R'){// Remover
+             Serial << F("digite um valor") << endl;
+             while(!Serial.available());
+             valor = Serial.parseFloat();
+             while(!Serial.available());
+             int dia = Serial.parseInt();
+             Serial.flush();
+             while(!Serial.available());
+             int mes = Serial.parseInt();
+             Serial.flush();
+             while(!Serial.available());
+             int ano = Serial.parseInt();
+             Serial.flush();
+             
+             Data atual(dia,mes,ano);
+             arvore.removerRec(&atual, valor);
+  
+         } else if (operacao == 'B'){
+             Serial << F("Ainda não implementado!") << endl;
+              
+         } else if (operacao == 'E'){ // Escrever tudo
+             arvore.preOrder();
+         } else if (operacao == 'S'){
+             Serial << F("Implementação omitida") << endl;
+                  
+              /*if(arvore.save()){
+                  Serial << F("Salva com sucesso!") << endl;
+              } else {
+                  Serial << F("Não foi possível salvar o arquivo!") << endl;
+              }*/
+                  
+         } else if (operacao == 'C'){ //Carregar
+             Serial << F("Implementação omitida") << endl;
+              
+              /*if(arvore.read()){
+                  Serial << "Carregada com sucesso!\n";
+              } else {
+                  Serial << "Erro na leitura do arquivo!\n";
+              }*/
+                  
+         } else if (operacao == 'F'){
+         } else {
+             Serial.println("OPCAO INVALIDA");
+         }
 
-       } else if (operacao == 'B'){
-           Serial << F("Ainda não implementado!") << endl;
-            
-       } else if (operacao == 'E'){ // Escrever tudo
-           arvore.preOrder();
-       } else if (operacao == 'S'){
-           Serial << F("Implementação omitida") << endl;
-                
-            /*if(arvore.save()){
-                Serial << F("Salva com sucesso!") << endl;
-            } else {
-                Serial << F("Não foi possível salvar o arquivo!") << endl;
-            }*/
-                
-       } else if (operacao == 'C'){ //Carregar
-           Serial << F("Implementação omitida") << endl;
-            
-            /*if(arvore.read()){
-                Serial << "Carregada com sucesso!\n";
-            } else {
-                Serial << "Erro na leitura do arquivo!\n";
-            }*/
-                
-       } else if (operacao == 'F'){
-       } else {
-           Serial.println("OPCAO INVALIDA");
+         lastOp = operacao;
        }
        delay(5000);
 }
