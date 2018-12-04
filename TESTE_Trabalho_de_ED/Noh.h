@@ -18,6 +18,7 @@ using namespace std;
 
 class Noh {
     friend class Lista;
+    friend class AVL;
     private:
         float mTemperatura;
         Noh* mPtProx;

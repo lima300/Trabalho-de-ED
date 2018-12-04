@@ -31,16 +31,20 @@ using namespace std;
 typedef string Texto;
 
 int main() { // NÃO MODIFIQUE!
-    Data atual = Data(21,11,2018);
+    int dia = 0;
+    int mes = 0;
+    int ano = 0;
+    
+    Data atual = Data(dia,mes, ano);
     AVL arvore;
     
     float valor;
     char operacao;
     
     do {
-        string dataAtual = atual.get();
+        //string dataAtual = atual.get();
         
-        cout << "|------------------| MENU |------------------|" <<  endl
+        /*cout << "|------------------| MENU |------------------|" <<  endl
              << "|                                            |" <<  endl
              << "|          Opções:                           |" <<  endl
              << "|          I > Inserir temperatura           |" <<  endl
@@ -50,18 +54,25 @@ int main() { // NÃO MODIFIQUE!
              << "|          S > Salvar dados                  |" <<  endl
              << "|          C > Carregar dados                |" <<  endl
              << "|                                            |" <<  endl
-             << "|         Data a inserir: "
+             /*<< "|         Data a inserir: "
                                      << dataAtual <<"         |" <<  endl
              << "|                                            |" <<  endl
              << "|---------------------//---------------------|" <<  endl
-             << "Escolha uma opção:\n";
+             << "Escolha uma opção:\n";*/
         
         cin >> operacao;
         switch (operacao) {
             case 'I': // Inserir
+                cout << "DATA" << endl;
+                
+                cin >> dia >> mes >> ano;
+                
+                atual.alterar(dia, mes, ano);
+                
                 cout << "Digite a temperatura a ser inserida:\n";
                 
                 cin >> valor;
+                
                 arvore.inserirRec(&atual, valor);
                 break;
             case 'R': // Remover
@@ -69,10 +80,14 @@ int main() { // NÃO MODIFIQUE!
                 arvore.removerRec(&atual, valor);
                 break;
             case 'B': // Buscar
-                
+                cout << "DATA" << endl;
+                cin >> dia >> mes >> ano;
+                atual.alterar(dia, mes, ano);
+                arvore.busca(&atual);
                 break;
+                
             case 'E': // Escrever tudo
-                arvore.preOrder();
+                arvore.Order();
                 break;
             case 'S':
                 

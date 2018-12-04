@@ -18,7 +18,7 @@
 using namespace std;
 
 NohAVL::NohAVL(Data* d){
-    chave = d;
+    chave = new Data(d->dia, d->mes, d->ano);
     lista = new Lista();
     esq = nullptr;
     dir = nullptr;
@@ -26,6 +26,7 @@ NohAVL::NohAVL(Data* d){
 };
 
 NohAVL::~NohAVL(){
+    delete lista;
     delete esq;
     delete dir;
 }

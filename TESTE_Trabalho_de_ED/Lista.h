@@ -32,8 +32,8 @@ class Lista {
         void remover(float t);
         void imprime() const;
         Noh* buscar(float t);
+        Lista copy(Lista a);
         //string get();
 };
 
 #endif /* LISTA_H */
-

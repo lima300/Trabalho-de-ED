@@ -35,16 +35,16 @@ class AVL {
         void inserirRec (Data* d, float t);
         NohAVL* inserirRecAux (NohAVL* umNoh, Data* d, float t);
         NohAVL* arrumarBalanceamento(NohAVL* umNoh);
-        void removerRec(Data* d, float t);
+        void removerRec(Data* d);
         NohAVL* removerRecAux(NohAVL* umNoh, Data* d);
-        void preOrder(){ preOrderAux(raiz);}
-        void preOrderAux(NohAVL* umNoh);
+        void Order();
+        void OrderAux(NohAVL* umNoh);
         NohAVL* minimoAux (NohAVL* atual);
-        Lista* busca (Data* d);
-        /*bool save(string nome = "output.txt");
-        bool recursiveSave(NohAVL* noh, string nome);
-        bool read(string nome = "output.txt");*/
+        void busca (Data* d);
+        NohAVL copy(NohAVL no);
+        /*bool save(String nome = "output.txt");
+        bool recursiveSave(NohAVL* noh, String nome);
+        /*bool read(string nome = "output.txt");*/
 };
 
 #endif /* AVL_H */
-

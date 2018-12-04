@@ -22,16 +22,19 @@ class Data {
     friend class Noh;
     friend class Lista;
     friend class AVL;
+    friend class NohAVL;
     private:
         int dia;
         int mes;
         int ano;
     public:
-    Data (int d, int m, int a);
-    bool operator < (Data* d);
-    bool operator > (Data* d);
-    bool operator == (Data* d);
-    string get();
+        Data (int d, int m, int a);
+        void alterar(int d, int m, int a);
+        bool operator < (Data* d);
+        bool operator > (Data* d);
+        bool operator == (Data* d);
+        bool operator != (Data* d);
+        string get();
 };
 
 #endif /* DATA_H */

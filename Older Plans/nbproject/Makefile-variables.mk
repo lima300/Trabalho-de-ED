@@ -9,11 +9,11 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-Linux
 CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux
-CND_ARTIFACT_NAME_Debug=trabalho-de-ed
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux/trabalho-de-ed
+CND_ARTIFACT_NAME_Debug=older_plans
+CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux/older_plans
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux/package
-CND_PACKAGE_NAME_Debug=trabalho-de-ed.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/trabalho-de-ed.tar
+CND_PACKAGE_NAME_Debug=olderplans.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux/package/olderplans.tar
 # Release configuration
 CND_PLATFORM_Release=MinGW-Windows
 CND_ARTIFACT_DIR_Release=dist/Release/MinGW-Windows

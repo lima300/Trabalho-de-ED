@@ -37,10 +37,10 @@ class AVL {
         NohAVL* arrumarBalanceamento(NohAVL* umNoh);
         void removerRec(Data* d, float t);
         NohAVL* removerRecAux(NohAVL* umNoh, Data* d);
-        void preOrder(){ preOrderAux(raiz);}
-        void preOrderAux(NohAVL* umNoh);
+        void Order(){ OrderAux(raiz);}
+        void OrderAux(NohAVL* umNoh);
         NohAVL* minimoAux (NohAVL* atual);
-        Lista* busca (Data* d);
+        void busca (Data* d);
         bool save(string nome = "output.txt");
         bool recursiveSave(NohAVL* noh, string nome);
         bool read(string nome = "output.txt");

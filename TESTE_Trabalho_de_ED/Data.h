@@ -13,6 +13,7 @@
 
 #ifndef DATA_H
 #define DATA_H
+#include "Arduino.h"
 
 using namespace std;
 
@@ -21,17 +22,18 @@ class Data {
     friend class Noh;
     friend class Lista;
     friend class AVL;
+    friend class NohAVL;
     private:
         int dia;
         int mes;
         int ano;
     public:
     Data (int d, int m, int a);
+    void set(int d, int m, int a);
     bool operator < (Data* d);
     bool operator > (Data* d);
     bool operator == (Data* d);
-    /*String get();*/
+    bool operator != (Data* d);
 };
 
 #endif /* DATA_H */
-

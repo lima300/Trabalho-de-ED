@@ -50,8 +50,6 @@ void Lista::inserir(float t){
         mPtUltimo = novo;
     }
     mTamanho++;
-    Serial.println("insercao realizada");
-    Serial.println(novo->mTemperatura);
 }
 
 void Lista::remover(float t){
@@ -80,6 +78,7 @@ void Lista::remover(float t){
                 anterior->mPtProx = atual->mPtProx;
             }
         }
+        Serial.println("removido com sucesso");
         mTamanho--;
         delete remover;
     }
@@ -88,10 +87,11 @@ void Lista::remover(float t){
 void Lista::imprime() const {
     Noh* iter = mPtPrimeiro;
     while (iter != nullptr) {
-        Serial.println(iter->mTemperatura);
-        Serial.println(' ');
+        Serial.print(iter->mTemperatura);
+        Serial.print(" -> ");
         iter = iter->mPtProx;
     }
+    Serial.println("end");
 }
 
 Noh* Lista::buscar(float t){

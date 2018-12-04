@@ -11,14 +11,17 @@
  * Created on 23 de Novembro de 2018, 21:18
  */
 
-//#include <fstream>
 #include "Arduino.h"
+#include "Streaming.h"
 #include "NohAVL.h"
 #include "Lista.h"
 #include "AVL.h"
 #include "Data.h"
+/*#include "SdFat.h"
+#include "sdios.h"
+#include <SPI.h> */
 
-using namespace std;
+
 
 AVL::AVL(){
     raiz = nullptr;
@@ -121,20 +124,17 @@ NohAVL* AVL:: rotacaoDireitaEsquerda (NohAVL* umNoh){
 }
 
 void AVL::inserirRec(Data* d, float t){
-    Lista* buscado = busca (d);
-    if (buscado != nullptr){
-        buscado->inserir(t);
-    } else {
-        raiz = inserirRecAux(raiz, d, t);
-    }
+    raiz = inserirRecAux(raiz, d, t);
 }
 
 NohAVL* AVL::inserirRecAux (NohAVL* umNoh, Data* d, float t){
-    if (umNoh == nullptr){
+    if (umNoh == NULL){
         NohAVL* novo = new NohAVL(d);
         novo->lista->inserir(t);
         return novo;
-    } else if (d < umNoh->chave){
+    } else if (*d == umNoh->chave){
+        umNoh->lista->inserir(t);
+    }else if (*d < umNoh->chave){
         umNoh->esq = inserirRecAux(umNoh->esq, d, t);
         umNoh->esq->pai = umNoh;
     } else {
@@ -169,70 +169,69 @@ NohAVL* AVL::arrumarBalanceamento(NohAVL* umNoh){
     return umNoh;
 }
 
-void AVL::preOrderAux(NohAVL* umNoh){
-    if(umNoh != nullptr) { 
-        Serial << umNoh->chave->dia;
-        Serial << '/';
-        Serial << umNoh->chave->mes;
-        Serial << '/';
-        Serial << umNoh->chave->ano;
-        Serial << ':';
+void AVL::Order(){
+  if(raiz){
+    OrderAux(raiz);
+  } else {
+    Serial.println("Opa! Sua estrutura está vazia!");
+  }
+}
+
+void AVL::OrderAux(NohAVL* umNoh){
+    if(umNoh != nullptr) {
+        OrderAux(umNoh->esq); 
         
+        Serial.print(umNoh->chave->dia);
+        Serial.print('/');
+        Serial.print(umNoh->chave->mes);
+        Serial.print('/');
+        Serial.print(umNoh->chave->ano);
+        Serial.print(" : ");
         umNoh->lista->imprime();
         
-        Serial << '\n'; 
-        preOrderAux(umNoh->esq); 
-        preOrderAux(umNoh->dir); 
+        OrderAux(umNoh->dir); 
     }
 }
 
-void AVL::removerRec(Data* d, float t){
-    Lista* buscado = busca(d);
-    if (buscado != nullptr){
-        if (buscado->mTamanho == 1){
-            buscado->remover(t);
-            raiz = removerRecAux(raiz, d);
-        } else {
-            buscado->remover(t);
-        }
-    } else {
-        //throw invalid_argument ("Elemento nao encontrado");
-    }
+void AVL::removerRec(Data* d){
+    raiz = removerRecAux(raiz, d);
 }
 
 NohAVL* AVL::removerRecAux(NohAVL* umNoh, Data* d){
     if (umNoh == nullptr){
         return umNoh;
-    } 
-    if ( d < umNoh->chave ){ 
-        umNoh->esq = removerRecAux(umNoh->esq, d);
-    } else if( d > umNoh->chave ) { 
-        umNoh->dir = removerRecAux(umNoh->dir, d);
-    } else { 
-        // node with only one child or no child 
-        if ((umNoh->esq == nullptr) or (umNoh->dir == nullptr)){ 
-            NohAVL* temp = umNoh->esq ? umNoh->esq : 
-                                             umNoh->dir; 
-  
-            if (temp == nullptr) { 
-                temp = umNoh; 
-                umNoh = NULL; 
-            } 
-            else { // One child case 
-                *umNoh = *temp;
-            }
-            delete temp;
-        } else { 
-            NohAVL* temp = minimoAux(umNoh->dir); 
-            umNoh->chave = temp->chave; 
-            umNoh->dir = removerRecAux(umNoh->dir, temp->chave); 
-        } 
-    } 
-    if (umNoh == nullptr){ 
-        return umNoh; 
     }
+
+    if (*d == umNoh->chave){
+        // Nó com um ou nenhum filho
+        if ((umNoh->esq == nullptr) or (umNoh->dir == nullptr)){ 
+            NohAVL* aux = umNoh->esq ? umNoh->esq : umNoh->dir; 
     
-    return arrumarBalanceamento(umNoh);
+            if (aux == nullptr) { //Caso não tenha filhos
+                aux = umNoh; 
+                umNoh = nullptr; 
+            } else { // Caso tenha um filho 
+                //*umNoh = copy(*aux);
+                *umNoh = *aux;
+            }
+            
+            delete aux;
+        } else { //Caso tenha dois filhos
+            NohAVL* aux = minimoAux(umNoh->dir); 
+            umNoh->chave = aux->chave; 
+            umNoh->dir = removerRecAux(umNoh->dir, aux->chave); 
+        }
+    } else if (*d < umNoh->chave ){
+        umNoh->esq = removerRecAux(umNoh->esq, d);
+    } else {
+        umNoh->dir = removerRecAux(umNoh->dir, d);
+    }
+
+    if (umNoh == nullptr){
+          return umNoh;
+    }
+      
+    return arrumarBalanceamento(raiz);
 }
 
 NohAVL* AVL::minimoAux(NohAVL* atual){
@@ -243,31 +242,72 @@ NohAVL* AVL::minimoAux(NohAVL* atual){
     return atual;
 }
 
-Lista* AVL::busca(Data* d){
+void AVL::busca(Data* d){
     NohAVL* atual = raiz;
-    while(atual != NULL and atual->chave != d){
-        if(atual->chave > d){
+    
+    while(atual != nullptr and *atual->chave != d){
+        
+        if(*atual->chave > d){
             atual = atual->esq;
-        }
-        else{
+        } else {
             atual = atual->dir;
         }
     }
-    if (atual != NULL){
-        return atual->lista;
+    
+    if (atual != nullptr){
+        Serial.println("Data encontrada!");
+        Serial.print("[");
+        Serial.print(d->dia);
+        Serial.print("/");
+        Serial.print(d->mes);
+        Serial.print("/");
+        Serial.print(d->ano);
+        Serial.print("] -> ");
+        
+        atual->lista->imprime();
     } else {
-        return NULL;
+        Serial.println("Data não encontrada!");
     }
 }
 
-/*bool AVL::recursiveSave(NohAVL* noh, string nome){
+NohAVL AVL::copy(NohAVL noh){
+    int d, m, a;
+    d = noh.chave->dia;
+    m = noh.chave->mes;
+    a = noh.chave->ano;
+    Data date(d, m, a);
+
+    Lista temps;
+
+    Noh* auxl = noh.lista->mPtPrimeiro;
+
+    while(auxl){
+        temps.inserir(auxl->mTemperatura);
+        auxl = auxl->mPtProx;
+    }
+
+    Serial.println("SAIU DO WHILE");
+    
+    NohAVL novoNo(&date);
+    novoNo.lista = &temps;
+    novoNo.dir = noh.dir;
+    novoNo.esq = noh.esq;
+    
+    return novoNo;
+}
+
+
+/*bool AVL::recursiveSave(NohAVL* noh, String nome){
     ofstream arch(nome.c_str(), ios::app);
     
-    string data = noh->chave->get();
-    arch << " " << data << " ";
+    arch << "[" << noh->chave->dia << "/" << noh->chave->mes << "/" << noh->chave->ano << "] -";
     
-    string lista = noh->lista->get();
-    arch << lista << "# ";
+    Noh* aux = noh->lista->mPtPrimeiro;
+
+    while(aux){
+      arch << " -> " << aux->mTemperatura;
+      aux = aux->mPtProx;
+    }
     
     arch.close();
     
@@ -289,7 +329,7 @@ Lista* AVL::busca(Data* d){
     }
 }
 
-bool AVL::save(string nome){
+bool AVL::save(String nome){
     if(recursiveSave(raiz, nome)){
         ofstream arch(nome.c_str(), ios::app);
         arch << '|';
@@ -301,7 +341,7 @@ bool AVL::save(string nome){
     }
 }
 
-bool AVL::read(string nome){
+/*bool AVL::read(string nome){
     ifstream arch(nome.c_str());
     
     if(arch){

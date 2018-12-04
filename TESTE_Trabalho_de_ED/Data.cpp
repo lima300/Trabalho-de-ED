@@ -12,8 +12,15 @@
  */
 
 #include "Data.h"
+#include "Arduino.h"
 
 Data::Data(int d , int m, int a){
+    dia = d;
+    mes = m;
+    ano = a;
+}
+
+void Data::set(int d , int m, int a){
     dia = d;
     mes = m;
     ano = a;
@@ -63,9 +70,9 @@ bool Data::operator == (Data* d){
     return ano == d->ano and mes == d->mes and dia == d->dia;
 }
 
-/*String Data::get(){
-    String da = to_string(dia);
-    String mo = to_string(mes);
-    String ye = to_string(ano);
-    return da + " " + mo + " " + ye;
-}*/
+bool Data::operator != (Data* d){
+    if (ano == d->ano and mes == d->mes and dia == d->dia){
+        return false;
+    }
+    return true;
+}

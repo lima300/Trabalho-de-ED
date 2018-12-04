@@ -20,7 +20,16 @@ Data::Data(int d , int m, int a){
     ano = a;
 }
 
+void Data::alterar(int d, int m, int a){
+    dia = d;
+    mes = m;
+    ano = a;
+}
+
 bool Data::operator < (Data* d){
+    
+    cout << "TO COMPARANDO SE EH MENOR!\n";
+    
     if (ano > d->ano){
         return false;
     } else if (ano < d->ano){
@@ -41,6 +50,9 @@ bool Data::operator < (Data* d){
 }
 
 bool Data::operator > (Data* d){
+    
+    cout << "TO COMPARANDO SE EH MAIOR!\n";
+    
     if (ano > d->ano){
         return true;
     } else if (ano < d->ano){
@@ -61,7 +73,22 @@ bool Data::operator > (Data* d){
 }
 
 bool Data::operator == (Data* d){
+    
+    cout << "TO COMPARANDO SE EH IGUAL!\n";
+    
     return ano == d->ano and mes == d->mes and dia == d->dia;
+}
+
+bool Data::operator != (Data* d){
+    
+    cout << "TO COMPARANDO SE EH DIFERENTE!\n";
+    
+    if (ano == d->ano and mes == d->mes and dia == d->dia){
+        cout << "NÃO É!\n";
+        return false;
+    }
+    
+    return true;
 }
 
 string Data::get(){

@@ -121,12 +121,7 @@ NohAVL* AVL:: rotacaoDireitaEsquerda (NohAVL* umNoh){
 }
 
 void AVL::inserirRec(Data* d, float t){
-    Lista* buscado = busca (d);
-    if (buscado != NULL){
-        buscado->inserir(t);
-    } else {
-        raiz = inserirRecAux(raiz, d, t);
-    }
+    raiz = inserirRecAux(raiz, d, t);
 }
 
 NohAVL* AVL::inserirRecAux (NohAVL* umNoh, Data* d, float t){
@@ -134,7 +129,9 @@ NohAVL* AVL::inserirRecAux (NohAVL* umNoh, Data* d, float t){
         NohAVL* novo = new NohAVL(d);
         novo->lista->inserir(t);
         return novo;
-    } else if (d < umNoh->chave){
+    } else if (*d == umNoh->chave){
+        umNoh->lista->inserir(t);
+    }else if (*d < umNoh->chave){
         umNoh->esq = inserirRecAux(umNoh->esq, d, t);
         umNoh->esq->pai = umNoh;
     } else {
@@ -169,19 +166,19 @@ NohAVL* AVL::arrumarBalanceamento(NohAVL* umNoh){
     return umNoh;
 }
 
-void AVL::preOrderAux(NohAVL* umNoh){
+void AVL::OrderAux(NohAVL* umNoh){
     if(umNoh != NULL) { 
+        OrderAux(umNoh->esq); 
         cout << umNoh->chave->dia << "/" <<umNoh->chave->mes << "/"
              << umNoh->chave->ano << " : " ;
         umNoh->lista->imprime();
         cout << endl; 
-        preOrderAux(umNoh->esq); 
-        preOrderAux(umNoh->dir); 
+        OrderAux(umNoh->dir); 
     }
 }
 
 void AVL::removerRec(Data* d, float t){
-    Lista* buscado = busca(d);
+    /*Lista* buscado = busca(d);
     if (buscado != NULL){
         if (buscado->mTamanho == 1){
             buscado->remover(t);
@@ -191,7 +188,7 @@ void AVL::removerRec(Data* d, float t){
         }
     } else {
         throw invalid_argument ("Elemento nao encontrado");
-    }
+    }*/
 }
 
 NohAVL* AVL::removerRecAux(NohAVL* umNoh, Data* d){
@@ -237,20 +234,25 @@ NohAVL* AVL::minimoAux(NohAVL* atual){
     return atual;
 }
 
-Lista* AVL::busca(Data* d){
+void AVL::busca(Data* d){
     NohAVL* atual = raiz;
-    while(atual != NULL and atual->chave != d){
-        if(atual->chave > d){
+    
+    while(atual != NULL and *atual->chave != d){
+        
+        if(*atual->chave > d){
             atual = atual->esq;
-        }
-        else{
+        } else {
             atual = atual->dir;
         }
+        
     }
+    
+    
     if (atual != NULL){
-        return atual->lista;
+        cout << "Lista encontrada!\n";
+        atual->lista->imprime();
     } else {
-        return NULL;
+        cout << "Lista encontrada!\n";
     }
 }
 
