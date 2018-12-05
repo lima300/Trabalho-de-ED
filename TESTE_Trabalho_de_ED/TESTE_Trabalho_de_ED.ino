@@ -4,7 +4,7 @@
  * Por: Kellyson Santos (201820366) e Otavio Lima (201811022)
  * UFLA - 2018/2
  * 
- * Arquivo: Main
+ *  Arquivo principal
  * 
  * O trabalho consiste em uma aplicação que capta os dados de Data e
  * Temperatura de um sensor para Arduino (Real Time Clock RTC DS3231)
@@ -15,13 +15,19 @@
  *      - Lista encadeada;
  * 
  *  ~ Cada nó da Árvore possui como chave uma data, e armazena as
- * 	  temperaturas do dia em que a leitura dos dados foi efetuada,
+ *    temperaturas do dia em que a leitura dos dados foi efetuada,
  *    ou seja, cada nó é correspondente a um dia;
  *  ~ Cada dia possui uma Lista que armazena em seus nós uma temperatura
  *    medida no momento da inserção.
  * 
- *  Os comandos são passados ao arduíno através do Monitor Serial,
- * 	através das opções dispostas no menu.
+ *  O programa funciona através do Monitor Serial do Arduino, onde o usuário
+ * escolhe entre as opções dispostas para a execução de operações.
+ *      - I: Insere uma nova temperatura
+ *      - R: Remove o dia atual
+ *      - E: Escreve as temperaturas dos dias
+ *      - B: Buscar as temperaturas de um dia
+ *      - S: Salva os dados em um arquivo no SD
+ *      - D: Reconfigura a data do sensor
  */
 
 //Inclusão das bibliotecas e classes necessárias
@@ -45,31 +51,33 @@ int ano = year(t);
 Data* atual = new Data(dia,mes,ano);
 AVL arvore;
 
-void setup(void){
-	Serial.begin(9600); //Inicia a Serial
-	while (not Serial); //Aguarda a Serial estar pronta
-	setSyncProvider(RTC.get);
- 
-  Serial << F("Sincronizando sensor RTC...");
-  if (timeStatus() != timeSet)
-      Serial << F(" Falha!");
-  else
-      Serial << F(" OK!");
-  Serial << endl << endl << endl;
-	
-	//Impressão do menu de opções
-	Serial 	<< F("|------------------| MENU |------------------|") <<  endl
-			<< F("|                                            |") <<  endl
-			<< F("|          Opções:                           |") <<  endl
-			<< F("|          I > Inserir temperatura           |") <<  endl
-			<< F("|          R > Remover temperatura           |") <<  endl
-			<< F("|          B > Buscar  temperatura           |") <<  endl
-			<< F("|          E > Imprimir ordenado             |") <<  endl
-			<< F("|          S > Salvar dados                  |") <<  endl
-      << F("|          D > Configurar data               |") <<  endl
-			<< F("|                                            |") <<  endl
-			<< F("|---------------------//---------------------|") <<  endl
-			<< F("Escolha uma opção:") << endl;
+void setup(void){ //Configurar o Arduino
+    
+    Serial.begin(9600); //Inicia a Serial
+    while (not Serial); //Aguarda a Serial estar pronta
+    startSD(); //Inicializa o cartão SD
+    
+    setSyncProvider(RTC.get); //Inicializa o Sensor RTC e sincroniza com a biblioteca Time
+    Serial << F("Sincronizando sensor RTC...");
+    if (timeStatus() != timeSet)
+        Serial << F(" Falha!");
+    else
+        Serial << F(" OK!");
+    Serial << endl << endl << endl;
+    
+    //Impressão do menu de opções
+    Serial  << F("|------------------| MENU |------------------|") <<  endl
+            << F("|                                            |") <<  endl
+            << F("|          Opções:                           |") <<  endl
+            << F("|          I > Inserir temperatura           |") <<  endl
+            << F("|          R > Remover temperatura           |") <<  endl
+            << F("|          E > Imprimir ordenado             |") <<  endl
+            << F("|          B > Buscar  temperatura           |") <<  endl
+            << F("|          S > Salvar dados                  |") <<  endl
+            << F("|          D > Configurar data               |") <<  endl
+            << F("|                                            |") <<  endl
+            << F("|---------------------//---------------------|") <<  endl
+            << F("Escolha uma opção:") << endl;
 }
 
 char lastOp = ' '; //Utilizado para controle do loop
@@ -78,11 +86,11 @@ void loop(void){
     float temperatura;
     char operacao;
     
-    while(!Serial.available());
+    while(!Serial.available()); //Aguarda um valor ser digitado na Serial
     operacao = Serial.read();
-    Serial.flush();
+    Serial.flush(); //Limpa o histórico da Serial
     
-    if (operacao != lastOp){
+    if (operacao != lastOp){ //Condição para controlar o loop
          Serial.flush();
          if (operacao == 'I' or operacao == 'i'){ // Inserir
              temperatura = RTC.temperature() / 4.;
@@ -94,11 +102,11 @@ void loop(void){
              arvore.removerRec(atual);
 
              Serial << F("operação realizada") << endl;
-         }else if (operacao == 'E' or operacao == 'e'){
+         }else if (operacao == 'E' or operacao == 'e'){ // Escrever
                arvore.Order();
                
                Serial << endl;
-         } else if (operacao == 'B' or operacao == 'b'){
+         } else if (operacao == 'B' or operacao == 'b'){ // Buscar
              Serial.flush();
              Serial << F("Insira Data a ser pesquisada : (YYYY, MM, DD)") << endl;
              delay(5000);
@@ -116,15 +124,9 @@ void loop(void){
 
              Serial << endl;
          } else if (operacao == 'S' or operacao == 's'){ //Salvar os dados em arquivo
-             Serial << F("Implementação omitida") << endl;
-                  
-              /*if(arvore.save()){
-                  Serial << F("Salva com sucesso!") << endl;
-              } else {
-                  Serial << F("Não foi possível salvar o arquivo!") << endl;
-              }*/
+              arvore.save();
               
-              Serial << endl;    
+              Serial << F("Salvo") << endl;    
          } else if (operacao == 'D' or operacao == 'd'){ //Configurar a Data do sensor
              setDate();
              
@@ -135,6 +137,17 @@ void loop(void){
     }
 }
 
+//Função para iniciar o módulo SD
+void startSD(){
+    pinMode(pino, OUTPUT);
+ 
+    if (SD.begin()){
+    } else {
+        return;
+    }
+}
+
+//Função de configuração da data no RTC e inserção
 void setDate(){
     Serial.flush();
     Serial << F("Insira data : (YYYY, MM, DD)") << endl;

@@ -1,14 +1,38 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   AVL.cpp
- * Author: kellyson
+ * Trabalho Final de Estrutura de Dados
  * 
- * Created on 23 de Novembro de 2018, 21:18
+ * Por: Kellyson Santos (201820366) e Otavio Lima (201811022)
+ * UFLA - 2018/2
+ *
+ * Arquivo de código fonte: AVL.cpp
+ * 
+ * Implementação dos métodos da Classe AVL:
+ *      - construtor
+ *      - destrutor
+ *      - informaAltura
+ *      - atualizarAltura
+ *      - maximo
+ *      - fatorBalanceamento
+ *      - rotacaoEsquerda
+ *      - roracaoDireira
+ *      - inserirRec
+ *      - inserirRecAux
+ *      - arrumarBalanceamento
+ *      - removerRec
+ *      - removerRecAux
+ *      - order
+ *      - orderAux
+ *      - minimoAux
+ *      - busca
+ *      - save
+ *      - recursiveSave
+ * 
+ *  A descrição de cada método se encontra em sua implementação
+ * 
+ *  O arquivo possui duas funções auxiliares, que não são métodos, e são
+ * utilizadas para facilitar o manuseio do arquivo no método de salvamento
+ *
+ * Criado em 23 de Novembro de 2018
  */
 
 #include "Arduino.h"
@@ -17,20 +41,22 @@
 #include "Lista.h"
 #include "AVL.h"
 #include "Data.h"
-/*#include "SdFat.h"
-#include "sdios.h"
-#include <SPI.h> */
+#include <SPI.h>
+#include <SD.h>
 
+File file; //Declara a variável para salvamento do arquivo
 
-
+//Inicializa a raiz
 AVL::AVL(){
     raiz = nullptr;
 }
 
+//Destrutor: desaloca a raiz
 AVL::~AVL(){
     delete raiz;
 }
 
+// Método que retorna a altura de um Noh
 int AVL::informaAltura(NohAVL* umNoh){
     if (umNoh == nullptr){
         return 0;
@@ -39,6 +65,8 @@ int AVL::informaAltura(NohAVL* umNoh){
     }
 }
 
+// Método que atualiza a altura de um Noh
+// Utilizado após a inserção e a remoção de um novo Noh
 void AVL::atualizarAltura(NohAVL* umNoh){
     int altEsq = informaAltura(umNoh->esq);
     int altDir = informaAltura(umNoh->dir);
@@ -46,6 +74,8 @@ void AVL::atualizarAltura(NohAVL* umNoh){
     umNoh->altura = 1 + maximo(altEsq, altDir);
 }
 
+// Retorna a maior altura entre subárvore
+// à esquerda e à direita de um Noh
 int AVL::maximo(int a, int b){
     if (a > b){
         return a;
@@ -54,6 +84,8 @@ int AVL::maximo(int a, int b){
     }
 }
 
+// Calcula o fator de balanceamento de uma subárvore
+// Utilizado pela função de balanceamento
 int AVL::fatorBalanceamento(NohAVL* umNoh){
     int altEsq = informaAltura(umNoh->esq);
     int altDir = informaAltura(umNoh->dir);
@@ -61,6 +93,8 @@ int AVL::fatorBalanceamento(NohAVL* umNoh){
     return altEsq - altDir;
 }
 
+// Efetua a rotação em sentido anti-horário entre
+// nós quando necessário
 NohAVL* AVL::rotacaoEsquerda(NohAVL* umNoh){
     NohAVL* aux = umNoh->dir;
     umNoh->dir = aux->esq;
@@ -87,6 +121,8 @@ NohAVL* AVL::rotacaoEsquerda(NohAVL* umNoh){
     return aux;
 }
 
+// Efetua a rotação em sentido horário entre
+// nós quando necessário
 NohAVL* AVL::rotacaDireita(NohAVL* umNoh){
     NohAVL* aux = umNoh->esq;
     umNoh->dir = aux->dir;
@@ -113,62 +149,62 @@ NohAVL* AVL::rotacaDireita(NohAVL* umNoh){
     return aux;
 }
 
-NohAVL* AVL::rotacaoEsquerdaDireita (NohAVL* umNoh){
-    umNoh->esq = rotacaoEsquerda(umNoh->esq);
-    return rotacaDireita(umNoh);
-}
-
-NohAVL* AVL:: rotacaoDireitaEsquerda (NohAVL* umNoh){
-    umNoh->dir = rotacaDireita(umNoh->dir);
-    return rotacaoEsquerda(umNoh);
-}
-
+// Chama o método recursivo passando a raiz como parâmetro
 void AVL::inserirRec(Data* d, float t){
     raiz = inserirRecAux(raiz, d, t);
 }
 
+// Procura o lugar para inserção e insere recursivamente
 NohAVL* AVL::inserirRecAux (NohAVL* umNoh, Data* d, float t){
-    if (umNoh == NULL){
+    if (umNoh == NULL){ //Data ainda não existe, insere um novo Noh
         NohAVL* novo = new NohAVL(d);
         novo->lista->inserir(t);
         return novo;
-    } else if (*d == umNoh->chave){
+        
+    } else if (*d == umNoh->chave){ //Data já existe, insere na lista
         umNoh->lista->inserir(t);
-    }else if (*d < umNoh->chave){
+        
+    }else if (*d < umNoh->chave){ //Procura à esquerda
         umNoh->esq = inserirRecAux(umNoh->esq, d, t);
         umNoh->esq->pai = umNoh;
-    } else {
+        
+    } else { //Procura à direita
         umNoh->dir = inserirRecAux(umNoh->dir, d, t);
         umNoh->dir->pai = umNoh;
     }
-    return arrumarBalanceamento(umNoh);
+ 
+    return arrumarBalanceamento(umNoh); //Arruma o balanceamento caso a árvore degenere
 }
 
+//Faz o balanceamento da árvore quando necessário
 NohAVL* AVL::arrumarBalanceamento(NohAVL* umNoh){
     atualizarAltura(umNoh);
     int bal = fatorBalanceamento(umNoh);
     
-    if ((bal >= -1) and (bal <= 1)){
+    if ((bal >= -1) and (bal <= 1)){ //Balanceada
         return umNoh;
     }
     
-    if ((bal > 1) and (fatorBalanceamento(umNoh->esq) >= 0)){
+    if ((bal > 1) and (fatorBalanceamento(umNoh->esq) >= 0)){ //Desbalanceada à esquerda
         return rotacaDireita(umNoh);
     }
-    if ((bal > 1) and (fatorBalanceamento(umNoh->esq) < 0)){
+    if ((bal > 1) and (fatorBalanceamento(umNoh->esq) < 0)){ //Rotação Esquerda/Direita
         umNoh->esq = rotacaoEsquerda(umNoh);
         return rotacaDireita(umNoh);
     }
-    if ((bal < -1) and (fatorBalanceamento(umNoh->dir) <= 0)){
+    if ((bal < -1) and (fatorBalanceamento(umNoh->dir) <= 0)){ //Desbalanceada à direita
         return rotacaoEsquerda(umNoh);
     }
-    if ((bal < -1) and (fatorBalanceamento(umNoh->dir) > 0)){
+    if ((bal < -1) and (fatorBalanceamento(umNoh->dir) > 0)){ //Rotação Direita/Esquerda
         umNoh->dir = rotacaDireita(umNoh->dir);
         return rotacaoEsquerda(umNoh);
     }
+    
     return umNoh;
 }
 
+// Verifica se a árvore está vazia
+// Se não estiver, imprime a árvore com o método auxiliar
 void AVL::Order(){
   if(raiz){
     OrderAux(raiz);
@@ -177,8 +213,12 @@ void AVL::Order(){
   }
 }
 
+// Percorre a árvore imprimindo os nós ordenados pela chave recursivamente
 void AVL::OrderAux(NohAVL* umNoh){
     if(umNoh != nullptr) {
+        //Caso não seja nulo, visita o Noh à esquerda
+        //imprime seu dado
+        //caso não seja nulo, visita o Noh à direita
         OrderAux(umNoh->esq); 
         
         Serial.print(umNoh->chave->dia);
@@ -186,32 +226,37 @@ void AVL::OrderAux(NohAVL* umNoh){
         Serial.print(umNoh->chave->mes);
         Serial.print('/');
         Serial.print(umNoh->chave->ano);
-        Serial.print(" : ");
         umNoh->lista->imprime();
         
         OrderAux(umNoh->dir); 
     }
 }
 
+//Chama o método auxiliar recursivo passando a raiz como parâmetro
 void AVL::removerRec(Data* d){
     raiz = removerRecAux(raiz, d);
 }
 
+
 NohAVL* AVL::removerRecAux(NohAVL* umNoh, Data* d){
-    if (umNoh == nullptr){
+    if (umNoh == nullptr){ //Fim da árvore
         return umNoh;
     }
 
-    if (*d == umNoh->chave){
+    if (*d == umNoh->chave){ //Encontrou o Noh para remover
+        
         // Nó com um ou nenhum filho
         if ((umNoh->esq == nullptr) or (umNoh->dir == nullptr)){ 
-            NohAVL* aux = umNoh->esq ? umNoh->esq : umNoh->dir; 
-    
+            //Operador ternário (Funciona como uma estrutura condicional)
+            //Caso o filho à esquerda seja nulo, Noh auxiliar recebe o filho à direita
+            //Caso seja válido, Noh auxiliar recebe o próprio filho à esquerda
+            NohAVL* aux = umNoh->esq ? umNoh->esq : umNoh->dir;
+
+            //Compara o Noh auxiliar
             if (aux == nullptr) { //Caso não tenha filhos
                 aux = umNoh; 
                 umNoh = nullptr; 
-            } else { // Caso tenha um filho 
-                //*umNoh = copy(*aux);
+            } else { // Caso tenha um filho
                 *umNoh = *aux;
             }
             
@@ -221,9 +266,10 @@ NohAVL* AVL::removerRecAux(NohAVL* umNoh, Data* d){
             umNoh->chave = aux->chave; 
             umNoh->dir = removerRecAux(umNoh->dir, aux->chave); 
         }
-    } else if (*d < umNoh->chave ){
+        
+    } else if (*d < umNoh->chave ){ //Procura na subárvore à esquerda
         umNoh->esq = removerRecAux(umNoh->esq, d);
-    } else {
+    } else { //Procura na subárvore à direita
         umNoh->dir = removerRecAux(umNoh->dir, d);
     }
 
@@ -234,14 +280,15 @@ NohAVL* AVL::removerRecAux(NohAVL* umNoh, Data* d){
     return arrumarBalanceamento(raiz);
 }
 
+//Retorna o minimo da arvore recebida
 NohAVL* AVL::minimoAux(NohAVL* atual){
-    //Retorna o minimo da arvore
     while(atual -> esq != NULL){
-        atual = atual -> esq;
+        atual = atual->esq;
     }
     return atual;
 }
 
+//Procura por uma data e imprime a lista caso encontrado
 void AVL::busca(Data* d){
     NohAVL* atual = raiz;
     
@@ -262,7 +309,7 @@ void AVL::busca(Data* d){
         Serial.print(d->mes);
         Serial.print("/");
         Serial.print(d->ano);
-        Serial.print("] -> ");
+        Serial.print("]");
         
         atual->lista->imprime();
     } else {
@@ -270,109 +317,61 @@ void AVL::busca(Data* d){
     }
 }
 
-NohAVL AVL::copy(NohAVL noh){
-    int d, m, a;
-    d = noh.chave->dia;
-    m = noh.chave->mes;
-    a = noh.chave->ano;
-    Data date(d, m, a);
+//Percorre a lista em ordem salvando as temperaturas em arquivo recursivamente
+int AVL::recursiveSave(NohAVL* noh){
+    if(noh != nullptr){
+        recursiveSave(noh->esq);
 
-    Lista temps;
+        openArq();
+        file.print("[");
+        file.print(noh->chave->dia);
+        file.print("/");
+        file.print(noh->chave->mes);
+        file.print("/");
+        file.print(noh->chave->ano);
+        file.print("]");
 
-    Noh* auxl = noh.lista->mPtPrimeiro;
+        Noh* aux = noh->lista->mPtPrimeiro;
 
-    while(auxl){
-        temps.inserir(auxl->mTemperatura);
-        auxl = auxl->mPtProx;
+        while(aux){
+          file.print(" -> ");
+          file.print(aux->mTemperatura);
+          aux = aux->mPtProx;
+        }
+
+        closeArq();
+
+        recursiveSave(noh->dir);
+
+        return 1;
     }
-
-    Serial.println("SAIU DO WHILE");
     
-    NohAVL novoNo(&date);
-    novoNo.lista = &temps;
-    novoNo.dir = noh.dir;
-    novoNo.esq = noh.esq;
-    
-    return novoNo;
+    return 0;
 }
 
-
-/*bool AVL::recursiveSave(NohAVL* noh, String nome){
-    ofstream arch(nome.c_str(), ios::app);
-    
-    arch << "[" << noh->chave->dia << "/" << noh->chave->mes << "/" << noh->chave->ano << "] -";
-    
-    Noh* aux = noh->lista->mPtPrimeiro;
-
-    while(aux){
-      arch << " -> " << aux->mTemperatura;
-      aux = aux->mPtProx;
-    }
-    
-    arch.close();
-    
-    bool savedE = true;
-    bool savedD = true;
-    
-    if(noh->esq){
-        savedE = recursiveSave(noh->esq, nome);
-    }
-    
-    if(noh->dir){
-        savedD = recursiveSave(noh->dir, nome);
-    }
-    
-    if(savedE && savedD){
-        return true;
+//Chama a função recursiva passando a raiz como parâmetro
+void AVL::save(){
+    if(recursiveSave(raiz)){
+        Serial.println("Salvo com sucesso!");
     } else {
-        return false;
+        Serial.println("Erro ao salvar arquivos");
     }
 }
 
-bool AVL::save(String nome){
-    if(recursiveSave(raiz, nome)){
-        ofstream arch(nome.c_str(), ios::app);
-        arch << '|';
-        arch.close();
-        
-        return true;
+//Função auxiliar que abre o arquivo para escrita
+int openArq(){
+    file = SD.open("output.txt", FILE_WRITE);
+
+    if (file){
+        return 1;
     } else {
-        return false;
+        return 0;
     }
 }
 
-/*bool AVL::read(string nome){
-    ifstream arch(nome.c_str());
-    
-    if(arch){
-        string reader;
-        arch >> reader;
-        
-        while(reader != "|"){
-            
-            string dia = reader;
-            arch >> reader;
-            string mes = reader;
-            arch >> reader;
-            string ano = reader;
-
-            Data* date = new Data(stoi(dia),stoi(mes),stoi(ano));
-
-            while (reader != "#"){
-                arch >> reader;
-
-                if (reader != "#"){
-                    inserirRec(date,stof(reader));
-                }
-            }
-            
-            arch >> reader;
-            
-        };
-        
-        arch.close();
-        return true;
-    } else {
-        return false;
-    }
-}*/
+//Função auxiliar para fechar o arquivo aberto
+void closeArq(){
+  if (file){
+    file.close();
+  }
+}

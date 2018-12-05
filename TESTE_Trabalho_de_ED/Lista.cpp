@@ -1,14 +1,21 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   Lista.cpp
- * Author: kellyson
+ * Trabalho Final de Estrutura de Dados
  * 
- * Created on 23 de Novembro de 2018, 20:58
+ * Por: Kellyson Santos (201820366) e Otavio Lima (201811022)
+ * UFLA - 2018/2
+ *
+ * Arquivo de código fonte: Lista.cpp
+ * 
+ * Implementação dos métodos da Classe Lista:
+ *      - construtor
+ *      - destrutor
+ *      - vazia
+ *      - inserir
+ *      - remover
+ *      - imprime
+ *      - buscar
+ *
+ * Criado em 23 de Novembro de 2018
  */
 
 //#include <iostream>
@@ -19,13 +26,14 @@
 
 using namespace std;
 
-
+//Inicia uma lista com os atributos necessários
 Lista::Lista(){
     mPtPrimeiro = nullptr;
     mPtUltimo = nullptr;
     mTamanho = 0;
 }
 
+// Percorre a lista desalocando os ponteiros
 Lista::~Lista(){
     Noh* iter = mPtPrimeiro;
     Noh* proximo = nullptr;
@@ -36,10 +44,12 @@ Lista::~Lista(){
     }
 };
 
+// Retorna true caso a lista esteja vazia
 bool Lista::vazia(){
     return mPtPrimeiro == nullptr and mPtUltimo == nullptr and mTamanho == 0;
 }
 
+// Insere um novo elemento no fim da lista
 void Lista::inserir(float t){
     Noh* novo = new Noh(t);
     if (mPtPrimeiro == nullptr){
@@ -52,9 +62,10 @@ void Lista::inserir(float t){
     mTamanho++;
 }
 
+// Remove um elemento da lista
 void Lista::remover(float t){
     if (vazia()){
-        //throw runtime_error ("Impossivel Remover em lista vazia");
+        Serial.println("Impossível imprimir em lista vazia");
     } else {
         Noh* remover = buscar(t);
         if(remover == mPtPrimeiro){
@@ -84,16 +95,17 @@ void Lista::remover(float t){
     }
 }
 
+//Imprime a lista
 void Lista::imprime() const {
     Noh* iter = mPtPrimeiro;
     while (iter != nullptr) {
-        Serial.print(iter->mTemperatura);
         Serial.print(" -> ");
+        Serial.print(iter->mTemperatura);
         iter = iter->mPtProx;
     }
-    Serial.println("end");
 }
 
+//Procura por um nó com valor específico na lista
 Noh* Lista::buscar(float t){
     Noh* atual = mPtPrimeiro;
     bool encontrado = false;
@@ -106,22 +118,8 @@ Noh* Lista::buscar(float t){
         }
     }
     if (encontrado == false){
-        //throw invalid_argument ("Elemento não existe");
+        Serial.println("Elemento não existe");
     } else {
         return atual;
     }
 }
-
-/*String Lista::get(){
-    String temps = "";
-    
-    Noh* aux = mPtPrimeiro;
-    
-    while(aux){
-        temps += to_string(aux->mTemperatura) + " ";
-        aux = aux->mPtProx;
-    }
-    
-    return temps;
-}*/
-        

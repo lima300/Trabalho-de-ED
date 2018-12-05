@@ -1,14 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   NohAVL.h
- * Author: kellyson
+ * Trabalho Final de Estrutura de Dados
+ * 
+ * Por: Kellyson Santos (201820366) e Otavio Lima (201811022)
+ * UFLA - 2018/2
  *
- * Created on 23 de Novembro de 2018, 21:14
+ * Arquivo de cabeçalho: NohAVL.h
+ *
+ * Criado em 23 de Novembro de 2018
  */
 
 #ifndef NOHAVL_H

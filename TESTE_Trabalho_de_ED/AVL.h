@@ -1,14 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   AVL.h
- * Author: kellyson
+ * Trabalho Final de Estrutura de Dados
+ * 
+ * Por: Kellyson Santos (201820366) e Otavio Lima (201811022)
+ * UFLA - 2018/2
  *
- * Created on 23 de Novembro de 2018, 21:18
+ * Arquivo de cabeçalho: AVL.h
+ *
+ * Criado em 23 de Novembro de 2018
  */
 
 #ifndef AVL_H
@@ -30,8 +28,6 @@ class AVL {
         int fatorBalanceamento(NohAVL* umNoh);
         NohAVL* rotacaoEsquerda(NohAVL* umNoh);
         NohAVL* rotacaDireita(NohAVL* umNoh);
-        NohAVL* rotacaoEsquerdaDireita (NohAVL* umNoh);
-        NohAVL* rotacaoDireitaEsquerda (NohAVL* umNoh);
         void inserirRec (Data* d, float t);
         NohAVL* inserirRecAux (NohAVL* umNoh, Data* d, float t);
         NohAVL* arrumarBalanceamento(NohAVL* umNoh);
@@ -41,10 +37,8 @@ class AVL {
         void OrderAux(NohAVL* umNoh);
         NohAVL* minimoAux (NohAVL* atual);
         void busca (Data* d);
-        NohAVL copy(NohAVL no);
-        /*bool save(String nome = "output.txt");
-        bool recursiveSave(NohAVL* noh, String nome);
-        /*bool read(string nome = "output.txt");*/
+        void save();
+        int recursiveSave(NohAVL* noh);
 };
 
 #endif /* AVL_H */

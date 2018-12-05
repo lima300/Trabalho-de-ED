@@ -1,14 +1,16 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   NohAVL.cpp
- * Author: kellyson
+ * Trabalho Final de Estrutura de Dados
  * 
- * Created on 23 de Novembro de 2018, 21:14
+ * Por: Kellyson Santos (201820366) e Otavio Lima (201811022)
+ * UFLA - 2018/2
+ *
+ * Arquivo de código fonte: NohAVL.cpp
+ * 
+ * Implementação dos métodos da Classe NohAVL:
+ *      - Construtor
+ *      - Destrutor
+ *
+ * Criado em 23 de Novembro de 2018
  */
 
 #include "NohAVL.h"
@@ -17,6 +19,7 @@
 
 using namespace std;
 
+// Construtor: Aloca os ponteiros necessários
 NohAVL::NohAVL(Data* d){
     chave = new Data(d->dia, d->mes, d->ano);
     lista = new Lista();
@@ -25,7 +28,9 @@ NohAVL::NohAVL(Data* d){
     pai = nullptr;
 };
 
+// Destrutor
 NohAVL::~NohAVL(){
+    delete chave;
     delete lista;
     delete esq;
     delete dir;
